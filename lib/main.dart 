@@ -1,0 +1,117 @@
+import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Mere Krishna',
+      theme: ThemeData(primaryColor: Color(0xFFFFD700)),
+      home: MainScreen(),
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class MainScreen extends StatefulWidget {
+  @override
+  _MainScreenState createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  int _currentIndex = 0;
+  final List<Widget> _screens = [BhajanScreen(), ShlokScreen()];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("💛 Mere Krishna 💙"),
+        backgroundColor: Color(0xFFFFD700),
+      ),
+      body: _screens[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        selectedItemColor: Colors.orange,
+        onTap: (index) => setState(() => _currentIndex = index),
+        items: [
+          BottomNavigationBarItem(icon: Icon(Icons.music_note), label: "Bhajan"),
+          BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: "Daily Shlok"),
+        ],
+      ),
+    );
+  }
+}
+
+class BhajanScreen extends StatelessWidget {
+  List bhajans = [
+    {"name": "Mere Kanha - Jubin Nautiyal", "lyrics": "Mere Kanha...", "url": "https://youtu.be/bKi3ElqWhBY"},
+    {"name": "Hey Gopal Krishan", "lyrics": "Hey Gopal...", "url": "https://youtu.be/KZNMrrQsAzw"},
+    {"name": "Teri Galiyon Ka Hu Main Ashiq", "lyrics": "Teri Galiyon...", "url": "https://youtu.be/DiT7ykabtso"},
+    {"name": "Narayan Mil Jaye Gaye", "lyrics": "Narayan...", "url": "https://youtu.be/M_fR7NbxR6w"},
+  ];
+
+  Future<void> _launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Color(0xFFFFF8E1),
+      child: ListView.builder(
+        itemCount: bhajans.length,
+        itemBuilder: (context, index) {
+          return Card(
+            margin: EdgeInsets.all(12),
+            child: ListTile(
+              leading: Icon(Icons.play_circle_fill, color: Colors.orange, size: 35),
+              title: Text(bhajans[index]["name"], style: TextStyle(fontWeight: FontWeight.bold)),
+              subtitle: Text("Tap karo - YouTube me khulega"),
+              onTap: () => _launchURL(bhajans[index]["url"]),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class ShlokScreen extends StatelessWidget {
+  List shloks = [
+    {"sanskrit": "कर्मण्येवाधिकारस्ते मा फलेषु कदाचन।", "hindi": "Karmanye vadhikaraste...", "arth": "Tera adhikar keval karm karne me hai."},
+    {"sanskrit": "पत्रं पुष्पं फलं तोयं", "hindi": "Patram Pushpam...", "arth": "Jo mujhe bhakti se deta hai use main swikar karta hu."},
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    var todayShlok = shloks[DateTime.now().day % shloks.length];
+    return Container(
+      color: Color(0xFFFFF8E1),
+      padding: EdgeInsets.all(20),
+      child: Card(
+        child: Padding(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text("📖 Aaj Ka Shlok", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.orange)),
+              SizedBox(height: 20),
+              Text(todayShlok["sanskrit"], style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              SizedBox(height: 10),
+              Text(todayShlok["hindi"], style: TextStyle(fontSize: 16, fontStyle: FontStyle.italic)),
+              SizedBox(height: 15),
+              Text("Arth: " + todayShlok["arth"], style: TextStyle(fontSize: 16)),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
