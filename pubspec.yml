@@ -1,0 +1,11 @@
+name: mere_krishna
+description: Bhajan + Daily Shlok App
+version: 1.0.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  url_launcher: ^6.2.2
+
+flutter:
+  uses-material-design: true
